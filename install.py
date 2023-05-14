@@ -144,8 +144,12 @@ def install_lg() -> bool:
 def install_neovim() -> bool:
     user_local_bin = expanduser("~/.local/bin")
 
+    asset_name = "nvim-linux64.tar.gz"
+
     try:
-        os.system(f"./eget neovim/neovim --to {user_local_bin}")
+        os.system(
+            f"./eget neovim/neovim --asset {asset_name} -d & tar xf {asset_name} {user_local_bin}"
+        )
     except Exception as e:
         print(e)
         return False
@@ -170,7 +174,9 @@ if __name__ == "__main__":
     #         "Neither curl nor request is avaliable on your OS, install it manually before run this script"
     #     )
 
-    assert curl_is_installed(), "Curl is not installed, please install it before run this script"
+    assert (
+        curl_is_installed()
+    ), "Curl is not installed, please install it before run this script"
 
     if install_neovim():
         print("neovim downloaded")
@@ -182,7 +188,6 @@ if __name__ == "__main__":
         print(f"export PATH=$PATH:{user_local_bin}")
 
     if args.all:
-
         if not download_eget():
             print("Fail to download eget")
             sys.exit(1)
@@ -199,14 +204,10 @@ if __name__ == "__main__":
         print(
             "bash <(curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/master/utils/installer/install.sh)"
         )
-        print(
-            "It is adviced to install ripgrep and lazygit before execution, you can use this scrip with -r and -lg to easily install them"
-        )
 
         sys.exit("Successfully installed all")
 
     if args.lunarvim:
-
         print("Lunarvim requies interactive installation. Execute the following code:")
         print(
             "bash <(curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/master/utils/installer/install.sh)"
