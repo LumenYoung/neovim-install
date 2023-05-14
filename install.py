@@ -186,6 +186,10 @@ if __name__ == "__main__":
     else:
         print("fail to download neovim")
 
+    if not user_path_is_in_path():
+        print("User bin is not in path, please add it to your path with the following:")
+        print(f"export PATH=$PATH:{user_local_bin}")
+
     if args.all:
         assert download_mod == "curl", "installation from others requires curl"
 
@@ -201,11 +205,15 @@ if __name__ == "__main__":
             print("Fail to install lazygit")
             sys.exit(1)
 
-        sys.exit("Successfully installed all")
+        print("Lunarvim requies interactive installation. Execute the following code:")
+        print(
+            "bash <(curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/master/utils/installer/install.sh)"
+        )
+        print(
+            "It is adviced to install ripgrep and lazygit before execution, you can use this scrip with -r and -lg to easily install them"
+        )
 
-    if not user_path_is_in_path():
-        print("User bin is not in path, please add it to your path with the following:")
-        print(f"export PATH=$PATH:{user_local_bin}")
+        sys.exit("Successfully installed all")
 
     if args.lunarvim:
         assert (
