@@ -129,7 +129,9 @@ def install_neovim() -> bool:
         return False
 
     try:
-        os.system(f"curl -OL {neovim_release_url}  & tar xf {asset_name} -C {user_local}")
+        os.system(
+            f"curl -OL {neovim_release_url}  & tar xf --strip-components=1 {asset_name} -C {user_local}"
+        )
     except Exception as e:
         print(e)
         return False
