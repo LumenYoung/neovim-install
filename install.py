@@ -166,6 +166,11 @@ def install_neovim(download_mod: str) -> bool:
 if __name__ == "__main__":
     args = parse_args()
 
+    user_local_bin = expanduser("~/.local/bin")
+
+    if not os.path.exists(user_local_bin):
+        os.makedirs(user_local_bin)
+
     download_mod = ""
     if curl_is_installed():
         download_mod = "curl"
@@ -200,7 +205,6 @@ if __name__ == "__main__":
 
     if not user_path_is_in_path():
 
-        user_local_bin = expanduser("~/.local/bin")
 
         print("User bin is not in path, please add it to your path with the following:")
         print("export PATH=$PATH:{user_local_bin}")
