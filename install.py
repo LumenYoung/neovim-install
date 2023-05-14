@@ -3,6 +3,7 @@ This script installs neovim on container system.
 """
 
 import os
+import sys
 import argparse
 from os.path import basename, expanduser
 import shutil
@@ -17,13 +18,14 @@ neovim_release_url = (
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Neovim install specification")
     parser.add_argument(
-        "-l",
+        "-lvim",
         "--lunarvim",
         action="store_true",
         help="Specify whether to install lunarvim or not",
     )
     parser.add_argument("-r", "--rg", action="store_true", help="Install rigrep")
-    parser.add_argument("-lg", "--lazygit", action="store_true", help="Install lazygit")
+    parser.add_argument("-l", "--lg", action="store_true", help="Install lazygit")
+    parser.add_argument("-a", "--all", action="store_true", help="Install all")
 
     args = parser.parse_args()
 
@@ -33,24 +35,21 @@ def parse_args() -> argparse.Namespace:
     return args
 
 
-def download_eget() -> None:
+def download_eget() -> bool:
     """
-    
+
     Download the eget executable into the current directory
 
     :return: If the command is successfully
     """
 
     try:
-        os.system("")
+        os.system("curl https://zyedidia.github.io/eget.sh | sh")
     except Exception as e:
         print(e)
         return False
 
     return True
-
-
-
 
 
 def request_is_installed() -> bool:
@@ -106,26 +105,26 @@ def untar_neovim() -> bool:
     return True
 
 
-def install_rg(download_mod: str) -> bool:
-    rigrep_download_url = (
-        "https://github.com/BurntSushi/ripgrep/releases/latest"
-    )
+def install_rg() -> bool:
+    home_dir = expanduser("~")
 
-    if download_mod == "curl":
-        os.system(f"curl -LO {rigrep_download_url}")
-    elif download_mod == "request":
-        import requests
+    try:
+        os.system(f"./eget BurntSushi/ripgrep --to {home_dir}.local/bin")
+    except Exception as e:
+        print(e)
+        return False
 
-        response = requests.get(rigrep_download_url, timeout=30)
+    return True
 
-        if response.status_code == 200:
-            with open("nvim-linux64.tar.gz", "wb") as f:
-                f.write(response.content)
-            print("File downloaded successfully.")
-        else:
-            print(f"Request failed with status code {response.status_code}.")
 
-            return False
+def install_lg() -> bool:
+    home_dir = expanduser("~")
+
+    try:
+        os.system(f"./eget jesseduffield/lazygit --to {home_dir}.local/bin")
+    except Exception as e:
+        print(e)
+        return False
 
     return True
 
@@ -165,7 +164,55 @@ if __name__ == "__main__":
             "Neither curl nor request is avaliable on your OS, install it manually before run this script"
         )
 
-    if install_neovim("request"):
+    if install_neovim(download_mod):
         print("neovim downloaded")
     else:
         print("fail to download neovim")
+
+    if args.all:
+        assert download_mod == "curl", "installation from others requires curl"
+
+        if not download_eget():
+            print("Fail to download eget")
+            sys.exit(1)
+
+        if not install_rg():
+            print("Fail to install ripgrep")
+            sys.exit(1)
+
+        if not install_lg():
+            print("Fail to install lazygit")
+            sys.exit(1)
+
+        sys.exit("Successfully installed all")
+
+    if args.lunarvim:
+        assert (
+            download_mod == "curl"
+        ), "Lunarvim and its dependencies installation requires curl"
+
+        print("Lunarvim requies interactive installation. Execute the following code:")
+        print(
+            "bash <(curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/master/utils/installer/install.sh)"
+        )
+        print(
+            "It is adviced to install ripgrep and lazygit before execution, you can use this scrip with -r and -lg to easily install them"
+        )
+
+    if args.rg:
+        if not download_eget():
+            print("Fail to download eget")
+            sys.exit(1)
+
+        if not install_rg():
+            print("Fail to install ripgrep")
+            sys.exit(1)
+
+    if args.lg:
+        if not download_eget():
+            print("Fail to download eget")
+            sys.exit(1)
+
+        if not install_lg():
+            print("Fail to install lazygit")
+            sys.exit(1)
