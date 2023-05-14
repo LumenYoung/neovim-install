@@ -114,8 +114,8 @@ def install_lg() -> bool:
 
     return True
 
-def install_fd() -> bool:
 
+def install_fd() -> bool:
     user_local_bin = expanduser("~/.local/bin")
 
     try:
