@@ -114,6 +114,18 @@ def install_lg() -> bool:
 
     return True
 
+def install_fd() -> bool:
+
+    user_local_bin = expanduser("~/.local/bin")
+
+    try:
+        os.system(f"./eget sharkdp/fd --asset linux-gnu --to {user_local_bin}")
+    except Exception as e:
+        print(e)
+        return False
+
+    return True
+
 
 def install_neovim() -> bool:
     user_local = expanduser("~/.local")
@@ -181,6 +193,10 @@ if __name__ == "__main__":
 
         if not install_lg():
             print("Fail to install lazygit")
+            sys.exit(1)
+
+        if not install_fd():
+            print("Fail to install fd")
             sys.exit(1)
 
         print("Lunarvim requies interactive installation. Execute the following code:")
