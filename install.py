@@ -142,13 +142,17 @@ def install_lg() -> bool:
 
 
 def install_neovim() -> bool:
-    user_local_bin = expanduser("~/.local/bin")
+    user_local = expanduser("~/.local")
 
     asset_name = "nvim-linux64.tar.gz"
 
+    if not shutil.which("tar"):
+        print("tar is not installed, please install it before run this script")
+        return False
+
     try:
         os.system(
-            f"./eget neovim/neovim --asset {asset_name} -d & tar xf {asset_name} {user_local_bin}"
+            f"./eget neovim/neovim --asset {asset_name} -d & tar xf {asset_name} {user_local}"
         )
     except Exception as e:
         print(e)
