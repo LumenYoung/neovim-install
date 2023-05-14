@@ -152,7 +152,7 @@ def install_neovim() -> bool:
 
     try:
         os.system(
-            f"./eget neovim/neovim --asset {asset_name} -d & tar xf {asset_name} {user_local}"
+            f"./eget neovim/neovim --asset {asset_name} -d & tar xvf {asset_name} {user_local}"
         )
     except Exception as e:
         print(e)
