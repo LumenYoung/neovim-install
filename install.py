@@ -118,10 +118,10 @@ def untar_neovim() -> bool:
 
 
 def install_rg() -> bool:
-    home_dir = expanduser("~")
+    user_local_bin = expanduser("~/.local/bin")
 
     try:
-        os.system(f"./eget BurntSushi/ripgrep --to {home_dir}.local/bin")
+        os.system(f"./eget BurntSushi/ripgrep --to {user_local_bin}")
     except Exception as e:
         print(e)
         return False
@@ -130,10 +130,10 @@ def install_rg() -> bool:
 
 
 def install_lg() -> bool:
-    home_dir = expanduser("~")
+    user_local_bin = expanduser("~/.local/bin")
 
     try:
-        os.system(f"./eget jesseduffield/lazygit --to {home_dir}.local/bin")
+        os.system(f"./eget BurntSushi/ripgrep --to {user_local_bin}")
     except Exception as e:
         print(e)
         return False
@@ -204,10 +204,8 @@ if __name__ == "__main__":
         sys.exit("Successfully installed all")
 
     if not user_path_is_in_path():
-
-
         print("User bin is not in path, please add it to your path with the following:")
-        print("export PATH=$PATH:{user_local_bin}")
+        print(f"export PATH=$PATH:{user_local_bin}")
 
     if args.lunarvim:
         assert (
