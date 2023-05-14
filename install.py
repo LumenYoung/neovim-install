@@ -35,6 +35,18 @@ def parse_args() -> argparse.Namespace:
     return args
 
 
+def user_path_is_in_path() -> bool:
+    user_bin = expanduser("~/.local/bin")
+
+    path = os.environ["PATH"].split(os.pathsep)
+
+    if user_bin not in path:
+        print("User bin is not in path")
+        return False
+
+    return True
+
+
 def download_eget() -> bool:
     """
 
@@ -185,6 +197,13 @@ if __name__ == "__main__":
             sys.exit(1)
 
         sys.exit("Successfully installed all")
+
+    if not user_path_is_in_path():
+
+        user_local_bin = expanduser("~/.local/bin")
+
+        print("User bin is not in path, please add it to your path with the following:")
+        print("export PATH=$PATH:{user_local_bin}")
 
     if args.lunarvim:
         assert (
