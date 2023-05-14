@@ -141,24 +141,14 @@ def install_lg() -> bool:
     return True
 
 
-def install_neovim(download_mod: str) -> bool:
-    assert download_mod in ["curl", "request"]
+def install_neovim() -> bool:
+    user_local_bin = expanduser("~/.local/bin")
 
-    if download_mod == "curl":
-        os.system(f"curl -LO {neovim_release_url}")
-    elif download_mod == "request":
-        import requests
-
-        response = requests.get(neovim_release_url, timeout=30)
-
-        if response.status_code == 200:
-            with open(f"{basename(neovim_release_url)}", "wb") as f:
-                f.write(response.content)
-            print("File downloaded successfully.")
-        else:
-            print(f"Request failed with status code {response.status_code}.")
-
-            return False
+    try:
+        os.system(f"./eget neovim/neovim --to {user_local_bin}")
+    except Exception as e:
+        print(e)
+        return False
 
     return True
 
@@ -171,17 +161,18 @@ if __name__ == "__main__":
     if not os.path.exists(user_local_bin):
         os.makedirs(user_local_bin)
 
-    download_mod = ""
-    if curl_is_installed():
-        download_mod = "curl"
-    elif request_is_installed():
-        download_mod = "request"
-    else:
-        print(
-            "Neither curl nor request is avaliable on your OS, install it manually before run this script"
-        )
+    # if curl_is_installed():
+    #     download_mod = "curl"
+    # elif request_is_installed():
+    #     download_mod = "request"
+    # else:
+    #     print(
+    #         "Neither curl nor request is avaliable on your OS, install it manually before run this script"
+    #     )
 
-    if install_neovim(download_mod):
+    assert curl_is_installed(), "Curl is not installed, please install it before run this script"
+
+    if install_neovim():
         print("neovim downloaded")
     else:
         print("fail to download neovim")
@@ -191,7 +182,6 @@ if __name__ == "__main__":
         print(f"export PATH=$PATH:{user_local_bin}")
 
     if args.all:
-        assert download_mod == "curl", "installation from others requires curl"
 
         if not download_eget():
             print("Fail to download eget")
@@ -216,9 +206,6 @@ if __name__ == "__main__":
         sys.exit("Successfully installed all")
 
     if args.lunarvim:
-        assert (
-            download_mod == "curl"
-        ), "Lunarvim and its dependencies installation requires curl"
 
         print("Lunarvim requies interactive installation. Execute the following code:")
         print(
