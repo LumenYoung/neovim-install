@@ -133,7 +133,7 @@ def install_lg() -> bool:
     user_local_bin = expanduser("~/.local/bin")
 
     try:
-        os.system(f"./eget BurntSushi/ripgrep --to {user_local_bin}")
+        os.system(f"./eget jesseduffield/lazygit --to {user_local_bin}")
     except Exception as e:
         print(e)
         return False
