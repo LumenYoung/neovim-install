@@ -10,10 +10,6 @@ import shutil
 
 # pylint: disable=import-outside-toplevel, unused-import, missing-function-docstring, literal-comparison, line-too-long, invalid-name, redefined-outer-name, broad-exception-caught
 
-neovim_release_url = (
-    "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz"
-)
-
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Neovim install specification")
@@ -95,28 +91,6 @@ def curl_is_installed() -> bool:
     return True
 
 
-def untar_neovim() -> bool:
-    """
-
-    untar_neovim into the ~/.local folder
-
-    :return: [TODO:description]
-    """
-
-    tar_filename = basename(neovim_release_url)
-
-    # get user home folder
-    home_dir = expanduser("~")
-
-    try:
-        os.system(f"tar xf {tar_filename} {home_dir}/.local")
-    except Exception as e:
-        print(e)
-        return False
-
-    return True
-
-
 def install_rg() -> bool:
     user_local_bin = expanduser("~/.local/bin")
 
@@ -144,16 +118,18 @@ def install_lg() -> bool:
 def install_neovim() -> bool:
     user_local = expanduser("~/.local")
 
-    asset_name = "nvim-linux64.tar.gz"
+    neovim_release_url = (
+        "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz"
+    )
+
+    asset_name = basename(neovim_release_url)
 
     if not shutil.which("tar"):
         print("tar is not installed, please install it before run this script")
         return False
 
     try:
-        os.system(
-            f"./eget neovim/neovim --asset {asset_name} -d & tar xvf {asset_name} {user_local}"
-        )
+        os.system(f"curl {neovim_release_url}  & tar xf {asset_name} -C {user_local}")
     except Exception as e:
         print(e)
         return False
