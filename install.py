@@ -114,6 +114,17 @@ def install_lg() -> bool:
 
     return True
 
+def install_tree_sitter() -> bool:
+    user_local_bin = expanduser("~/.local/bin")
+
+    try:
+        os.system(f"./eget tree_sitter/tree_sitter --to {user_local_bin}")
+    except Exception as e:
+        print(e)
+        return False
+
+    return True
+
 
 def install_fd() -> bool:
     user_local_bin = expanduser("~/.local/bin")
@@ -197,6 +208,10 @@ if __name__ == "__main__":
 
         if not install_fd():
             print("Fail to install fd")
+            sys.exit(1)
+
+        if not install_tree_sitter():
+            print("Fail to install tree-sitter")
             sys.exit(1)
 
         print("Lunarvim requies interactive installation. Execute the following code:")
